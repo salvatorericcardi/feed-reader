@@ -1,0 +1,12 @@
+body {
+    background-color: #ffd6ff !important;
+}
+
+div.container {
+    background-color: #ffffff; 
+}
+
+.images {
+    max-height: 200px;
+    width: auto !important;
+}
