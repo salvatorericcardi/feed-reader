@@ -25,11 +25,13 @@ if($post['stored'] != null) {
                     case 'pubDate':
                         $nrecord[strtolower($key)] = date('Y-m-d', strtotime($value));
                         break;
+                    case 'category':
+                    case 'enclosure':
                     case 'description':
                     case 'guid':
                         break;
                     default:
-                        $nrecord[strtolower($key)] = $value;
+                        $nrecord[strtolower($key)] = $value->__toString();
                         break;
                 }
             }
@@ -62,10 +64,13 @@ if($post['current'] != null) {
                     case 'pubDate':
                         $nrecord[strtolower($key)] = date('Y-m-d', strtotime($value));
                         break;
+                    case 'category':
+                    case 'enclosure':
+                    case 'description':
                     case 'guid':
                         break;
                     default:
-                        $nrecord[strtolower($key)] = $value;
+                        $nrecord[strtolower($key)] = $value->__toString();
                         break;
                 }
             }

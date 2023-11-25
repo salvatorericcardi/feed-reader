@@ -77,8 +77,8 @@ document.getElementById('search').addEventListener('change', async e => {
     let storedFeed = sessionStorage.getItem('storedFeed');
     storedFeed = JSON.parse(storedFeed);
 
-    let feed = storedFeed ? storedFeed : await getFeed(options);
-    
+    let feed = search === '' ? await getFeed(options) : (Object.keys(storedFeed).length > 2 ? storedFeed : await getFeed(options));  
+
     if(form.search.value.length == 0) {
         const chunks = splitFeed(feed);
         printFeed(chunks);   
@@ -116,8 +116,15 @@ document.getElementById('search').addEventListener('change', async e => {
 })
 
 document.addEventListener('DOMContentLoaded', async e => {
+    if(form.search.value === '') {
+        const feed = await getFeed(options);
+        const chunks = splitFeed(feed);
+
+        printFeed(chunks);
+    }
+
     let storedFeed = sessionStorage.getItem('storedFeed');
-    if(storedFeed) {
+    if(storedFeed !== null && Object.keys(storedFeed).length > 2) {
         const orderedBy = sessionStorage.getItem('orderedBy');
         const pagination = sessionStorage.getItem('perPage');
 

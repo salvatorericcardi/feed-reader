@@ -8,8 +8,8 @@ export async function getFeed(options) {
 
     return feed.map(record => {
         const array = [];
-        array['title'] = record.title[0];
-        array['link'] = record.link[0];
+        array['title'] = record.title;
+        array['link'] = record.link;
         array['pubdate'] = record.pubdate;
 
         return array;
@@ -32,7 +32,10 @@ export function printFeed(feed, index = 0) {
             image.src = '/public/images/inps.jpeg';
             image.style = 'transform: scale(0.5)';
         } else if(feed[index][key].link.search(/agenziaentrate/i) > -1) {
-            image.src = '/public/images/agenzia-delle-entrate.jpeg'
+            image.src = '/public/images/agenzia-delle-entrate.jpeg';
+        } else {
+            image.src = '/public/images/image.jpg';
+            image.style = 'transform: scale(0.5)';
         }
 
         // article section
@@ -64,8 +67,12 @@ export function printFeed(feed, index = 0) {
         container.appendChild(news);   
     };
 
-    printSummary(feed);
-    printPagination(feed);
+    if(feed.length > 0) {
+        printSummary(feed);
+        printPagination(feed);
+    } else {
+        printSummary();
+    }
 };
 
 export function splitFeed(feed) {
@@ -104,7 +111,7 @@ export function splitFeed(feed) {
 }
 
 /*** Summary Section *****************************/
-export function printSummary(feed) {
+export function printSummary(feed = []) {
     let i = 0;
 
     for (const key in feed) {
@@ -113,7 +120,11 @@ export function printSummary(feed) {
         }
     }
 
-    document.getElementById('summary').innerText = 'Hai trovato ' + feed.length + ' pagine per un totale di ' + i + ' articoli';
+    if(feed.length > 0) {
+        document.getElementById('summary').innerText = 'Hai trovato ' + feed.length + ' pagine per un totale di ' + i + ' articoli';
+    } else {
+        document.getElementById('summary').innerText = 'Non ci sono articoli da leggere';
+    }
 }
 
 /*** Pagination Section *****************************/
