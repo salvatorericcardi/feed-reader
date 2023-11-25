@@ -1,8 +1,9 @@
-import { clearFeed, clearPagination, getFeed, orderBy, printFeed, printPagination, printSummary, splitFeed } from "./functions.js";
+import { clearFeed, clearPagination, filterFeed, getFeed, orderBy, perPage, printFeed, printPagination, printSummary, splitFeed } from "./functions.js";
 import { arrToObj, getAllFromLocalStorage, objToArr } from "./utilities.js";
 
 /** Global variables */
 var db;
+var page = 0;
 
 const form = document.forms.namedItem('feed-reader');
 
@@ -14,7 +15,7 @@ const data = {
 const options = {
     method: 'post',
     body: JSON.stringify(data),
-};
+}
 
 /*** Main section ********************************/
 form.addEventListener('submit', async e => {
@@ -43,7 +44,7 @@ form.addEventListener('submit', async e => {
     const chunks = splitFeed(feed);
 
     printFeed(chunks);
-});
+})
 
 document.getElementById('orderBy').addEventListener('change', async e => {
     let storedFeed = sessionStorage.getItem('storedFeed');
@@ -57,7 +58,7 @@ document.getElementById('orderBy').addEventListener('change', async e => {
 
     clearFeed();
     printFeed(chunks);
-});
+})
 
 document.getElementById('pagination').addEventListener('change', async e => {
     let storedFeed = sessionStorage.getItem('storedFeed');
@@ -68,16 +69,17 @@ document.getElementById('pagination').addEventListener('change', async e => {
 
     clearFeed();
     printFeed(chunks);
-});
+})
 
 document.getElementById('search').addEventListener('change', async e => {
     const search = form.search.value;
     const type = form['search-type'].value;
     
-    let storedFeed = sessionStorage.getItem('storedFeed');
-    storedFeed = JSON.parse(storedFeed);
+    // let storedFeed = sessionStorage.getItem('storedFeed');
+    // storedFeed = JSON.parse(storedFeed);
 
-    let feed = search === '' ? await getFeed(options) : (Object.keys(storedFeed).length > 2 ? storedFeed : await getFeed(options));  
+    let feed = await getFeed(options);
+    // let feed = search === '' ? await getFeed(options) : (Object.keys(storedFeed).length > 2 ? storedFeed : await getFeed(options));  
 
     if(form.search.value.length == 0) {
         const chunks = splitFeed(feed);
@@ -87,20 +89,33 @@ document.getElementById('search').addEventListener('change', async e => {
     }
     
     const regex = new RegExp(search, 'gi');
-    const filtered = feed.filter(record => {
-        let variable;
 
-        if(type == 'all') {
-            // return false if find an occurence and stop every loop
-            Object.values(record).every(el => variable = el.search(regex) > -1 ? false : true);  
-        } else {
-            // return false if find an occurence
-            variable = record[type].search(regex) > -1 ? false : true;
-        }
+    feed = objToArr(feed);
+    const filtered = filterFeed(feed, type, regex);
 
-        // invert false to true
-        return !variable;
-    });
+    const newfeed = arrToObj(filtered);
+
+    sessionStorage.setItem('storedFeed', JSON.stringify(newfeed));
+
+    const chunks = splitFeed(filtered);
+
+    clearFeed();
+
+    if(chunks.length != 0) {    
+        printFeed(chunks);
+    }
+})
+
+document.getElementById('search-type').addEventListener('change', async e => {
+    const search = form.search.value;
+    const type = form['search-type'].value;
+
+    let feed = await getFeed(options); 
+    
+    const regex = new RegExp(search, 'gi');
+
+    feed = objToArr(feed);
+    const filtered = filterFeed(feed, type, regex);
 
     const newfeed = arrToObj(filtered);
 
@@ -119,8 +134,9 @@ document.addEventListener('DOMContentLoaded', async e => {
     if(form.search.value === '') {
         const feed = await getFeed(options);
         const chunks = splitFeed(feed);
-
         printFeed(chunks);
+
+        return;
     }
 
     let storedFeed = sessionStorage.getItem('storedFeed');
@@ -145,4 +161,4 @@ document.addEventListener('DOMContentLoaded', async e => {
     const chunks = splitFeed(feed);
 
     printFeed(chunks);
-});
+})

@@ -13,7 +13,7 @@ export function getAllFromLocalStorage() {
     }
 
     return objects;
-};
+}
 
 export function arrToObj(arrObj, object = {}) {
     arrObj.forEach((item, index) => {

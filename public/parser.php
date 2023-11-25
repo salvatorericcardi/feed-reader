@@ -31,7 +31,9 @@ if($post['stored'] != null) {
                     case 'guid':
                         break;
                     default:
-                        $nrecord[strtolower($key)] = $value->__toString();
+                        $value = $key == 'title' ? htmlspecialchars_decode($value) : $value;
+                        
+                        $nrecord[strtolower($key)] = $value instanceof SimpleXMLElement ? $value->__toString() : $value;
                         break;
                 }
             }
@@ -70,7 +72,9 @@ if($post['current'] != null) {
                     case 'guid':
                         break;
                     default:
-                        $nrecord[strtolower($key)] = $value->__toString();
+                        $value = $key == 'title' ? htmlspecialchars_decode($value) : $value;
+
+                        $nrecord[strtolower($key)] = $value instanceof SimpleXMLElement ? $value->__toString() : $value;
                         break;
                 }
             }

@@ -21,7 +21,9 @@ export function clearFeed() {
     container.innerHTML = '';
 }
 
-export function printFeed(feed, index = 0) {
+export function printFeed(feed, index = 0, page = 0) {
+    index = page > 0 ? page : index;
+
     for (const key in feed[index]) {
         const image = document.createElement('img');
         image.classList.add('images', 'col-3');
@@ -69,7 +71,7 @@ export function printFeed(feed, index = 0) {
 
     if(feed.length > 0) {
         printSummary(feed);
-        printPagination(feed);
+        printPagination(feed, undefined, page);
     } else {
         printSummary();
     }
@@ -110,6 +112,23 @@ export function splitFeed(feed) {
     return chunks;
 }
 
+export function filterFeed(feed, filterType, searchRegex) {
+    return feed.filter(record => {
+        let variable;
+
+        if(filterType == 'all') {
+            // return false if find an occurence and stop every loop
+            Object.values(record).every(el => variable = el.search(searchRegex) > -1 ? false : true);  
+        } else {
+            // return false if find an occurence
+            variable = record[filterType].search(searchRegex) > -1 ? false : true;
+        }
+
+        // invert false to true
+        return !variable;
+    });
+}
+
 /*** Summary Section *****************************/
 export function printSummary(feed = []) {
     let i = 0;
@@ -128,12 +147,14 @@ export function printSummary(feed = []) {
 }
 
 /*** Pagination Section *****************************/
-export function printPagination(feed, form) {
+export function printPagination(feed, form, page) {
     clearPagination();
 
     for(let i = 1; i <= Object.keys(feed).length; i++) {
+        form = document.forms.namedItem('feed-reader');
+        
         const button = document.createElement('button');
-        button.classList.add('btn', 'btn-outline-secondary', 'col-auto', 'mx-1');
+        button.classList.add('pages', 'btn', 'btn-outline-secondary', 'col-auto', 'mx-1');
         button.type = 'button';
         button.textContent = i;
         button.value = i;
@@ -152,9 +173,10 @@ export function printPagination(feed, form) {
             const feed = await getFeed(options);
             const chunks = splitFeed(feed, form);
 
+            page = i - 1;
+
             let storedFeed = sessionStorage.getItem('storedFeed');
             if(storedFeed) {
-                const form = document.forms.namedItem('feed-reader');
                 const order = form.orderBy.value;
 
                 storedFeed = JSON.parse(storedFeed);
@@ -163,16 +185,25 @@ export function printPagination(feed, form) {
                 const chunks = splitFeed(storedFeed, form);
 
                 clearFeed();
-                printFeed(chunks, i - 1);
+                printFeed(chunks, undefined, page);
                 return;
             }
 
             clearFeed();
-            printFeed(chunks, i - 1);
+            printFeed(chunks, undefined, page);
         };
 
+        const pages = document.getElementById('pages');
         pages.appendChild(button);
     }
+
+    const buttons = document.getElementsByClassName('pages');
+    
+    for (const el of buttons) {
+        el.classList.remove('active')   
+    }
+
+    buttons.item(page).classList.add('active');
 }
 
 export function clearPagination() {
