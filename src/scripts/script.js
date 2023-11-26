@@ -1,5 +1,5 @@
-import { clearFeed, clearPagination, filterFeed, getFeed, orderBy, perPage, printFeed, printPagination, printSummary, splitFeed } from "./functions.js";
-import { arrToObj, getAllFromLocalStorage, objToArr } from "./utilities.js";
+import { clearFeed, filterFeed, getFeed, perPage, printFeed, splitFeed } from "./functions.js";
+import { arrToObj, getAllFromLocalStorage, objToArr, orderBy } from "./utilities.js";
 
 /** Global variables */
 var db;
@@ -8,7 +8,7 @@ var page = 0;
 const form = document.forms.namedItem('feed-reader');
 
 const data = {
-    stored: getAllFromLocalStorage(),
+    stored: getAllFromLocalStorage(localStorage),
     current: null,
 };
 
@@ -41,7 +41,7 @@ form.addEventListener('submit', async e => {
     };
 
     const feed = await getFeed(options);
-    const chunks = splitFeed(feed);
+    const chunks = splitFeed(feed, form.pagination.value);
 
     printFeed(chunks);
 })
@@ -52,9 +52,9 @@ document.getElementById('orderBy').addEventListener('change', async e => {
 
     let feed = storedFeed ? storedFeed : await getFeed(options);
     feed = objToArr(feed);
-    feed = orderBy(feed, form);
+    feed = orderBy(feed, form.orderBy.value);
 
-    const chunks = splitFeed(feed);
+    const chunks = splitFeed(feed, form.pagination.value);
 
     clearFeed();
     printFeed(chunks);
@@ -65,7 +65,7 @@ document.getElementById('pagination').addEventListener('change', async e => {
     storedFeed = JSON.parse(storedFeed);
     
     const feed = storedFeed ? storedFeed : await getFeed(options);
-    const chunks = await perPage(feed);
+    const chunks = await perPage(feed, form.pagination.value);
 
     clearFeed();
     printFeed(chunks);
@@ -82,7 +82,7 @@ document.getElementById('search').addEventListener('change', async e => {
     // let feed = search === '' ? await getFeed(options) : (Object.keys(storedFeed).length > 2 ? storedFeed : await getFeed(options));  
 
     if(form.search.value.length == 0) {
-        const chunks = splitFeed(feed);
+        const chunks = splitFeed(feed, form.pagination.value);
         printFeed(chunks);   
 
         return;  
@@ -97,7 +97,7 @@ document.getElementById('search').addEventListener('change', async e => {
 
     sessionStorage.setItem('storedFeed', JSON.stringify(newfeed));
 
-    const chunks = splitFeed(filtered);
+    const chunks = splitFeed(filtered, form.pagination.value);
 
     clearFeed();
 
@@ -121,7 +121,7 @@ document.getElementById('search-type').addEventListener('change', async e => {
 
     sessionStorage.setItem('storedFeed', JSON.stringify(newfeed));
 
-    const chunks = splitFeed(filtered);
+    const chunks = splitFeed(filtered, form.pagination.value);
 
     clearFeed();
 
@@ -133,7 +133,7 @@ document.getElementById('search-type').addEventListener('change', async e => {
 document.addEventListener('DOMContentLoaded', async e => {
     if(form.search.value === '') {
         const feed = await getFeed(options);
-        const chunks = splitFeed(feed);
+        const chunks = splitFeed(feed, form.pagination.value);
         printFeed(chunks);
 
         return;
@@ -146,10 +146,10 @@ document.addEventListener('DOMContentLoaded', async e => {
 
         storedFeed = JSON.parse(storedFeed);
 
-        storedFeed = orderedBy ? orderBy(storedFeed, form) : storedFeed;
+        storedFeed = orderedBy ? orderBy(storedFeed, form.orderBy.value) : storedFeed;
         storedFeed = pagination ? await perPage(storedFeed) : storedFeed;
 
-        const chunks = splitFeed(storedFeed);
+        const chunks = splitFeed(storedFeed, form.pagination.value);
 
         clearFeed();
         printFeed(chunks);
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async e => {
     }
    
     const feed = await getFeed(options);
-    const chunks = splitFeed(feed);
+    const chunks = splitFeed(feed, form.pagination.value);
 
     printFeed(chunks);
 })

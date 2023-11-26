@@ -1,8 +1,8 @@
 import { getAllFromLocalStorage, objToArr } from "./utilities.js";
 
-/*** Feed Section *****************************/
+/*** Feed section *****************************/
 export async function getFeed(options) {
-    const feed = await fetch('/public/parser.php', options)
+    const feed = await fetch('http://localhost:8000/src/parser.php', options)
         .then(response => response.json())
         .then(result => result);
 
@@ -29,14 +29,14 @@ export function printFeed(feed, index = 0, page = 0) {
         image.classList.add('images', 'col-3');
 
         if(feed[index][key].link.search(/governo/i) > -1) {
-            image.src = '/public/images/governo.jpeg';
+            image.src = '/src/images/governo.jpeg';
         } else if(feed[index][key].link.search(/inps/i) > -1) {
-            image.src = '/public/images/inps.jpeg';
+            image.src = '/src/images/inps.jpeg';
             image.style = 'transform: scale(0.5)';
         } else if(feed[index][key].link.search(/agenziaentrate/i) > -1) {
-            image.src = '/public/images/agenzia-delle-entrate.jpeg';
+            image.src = '/src/images/agenzia-delle-entrate.jpeg';
         } else {
-            image.src = '/public/images/image.jpg';
+            image.src = '/src/images/image.jpg';
             image.style = 'transform: scale(0.5)';
         }
 
@@ -77,14 +77,12 @@ export function printFeed(feed, index = 0, page = 0) {
     }
 };
 
-export function splitFeed(feed) {
-    const form = document.forms.namedItem('feed-reader');
-
+export function splitFeed(feed, pagination) {
     // split feed into chunks
     let chunkSize;
     const chunks = [];
 
-    switch (form.pagination.value) {
+    switch (pagination) {
         case 'five':
             chunkSize = 5;
             break;
@@ -129,7 +127,7 @@ export function filterFeed(feed, filterType, searchRegex) {
     });
 }
 
-/*** Summary Section *****************************/
+/*** Summary section *****************************/
 export function printSummary(feed = []) {
     let i = 0;
 
@@ -146,7 +144,7 @@ export function printSummary(feed = []) {
     }
 }
 
-/*** Pagination Section *****************************/
+/*** Pagination section *****************************/
 export function printPagination(feed, form, page) {
     clearPagination();
 
@@ -161,7 +159,7 @@ export function printPagination(feed, form, page) {
         
         button.onclick = async e => {
             const data = {
-                stored: getAllFromLocalStorage(),
+                stored: getAllFromLocalStorage(localStorage),
                 current: null,
             };
             
@@ -171,7 +169,7 @@ export function printPagination(feed, form, page) {
             };
         
             const feed = await getFeed(options);
-            const chunks = splitFeed(feed, form);
+            const chunks = splitFeed(feed, form.pagination.value);
 
             page = i - 1;
 
@@ -182,7 +180,7 @@ export function printPagination(feed, form, page) {
                 storedFeed = JSON.parse(storedFeed);
                 storedFeed = orderBy(storedFeed, form);
 
-                const chunks = splitFeed(storedFeed, form);
+                const chunks = splitFeed(storedFeed, form.pagination.value);
 
                 clearFeed();
                 printFeed(chunks, undefined, page);
@@ -211,27 +209,6 @@ export function clearPagination() {
     pages.innerHTML = '';
 }
 
-export function orderBy(feed, form) {
-    feed = !Array.isArray(feed) ? objToArr(feed) : feed;
-
-    switch (form.orderBy.value) {
-        case 'date_asc':
-            feed = feed.sort((a, b) => a.pubdate - b.pubdate).reverse();
-            break;
-        case 'date_desc':
-            feed = feed.sort((a, b) => a.pubdate - b.pubdate);
-            break;
-        case 'title_asc':
-            feed = feed.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-        case 'title_desc':
-            feed = feed.sort((a, b) => a.title.localeCompare(b.title)).reverse();
-            break;
-    }
-
-    return feed;
-}
-
-export async function perPage(feed) {
-    return splitFeed(feed);
+export async function perPage(feed, pagination) {
+    return splitFeed(feed, pagination);
 }

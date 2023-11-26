@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "node-localstorage": "^3.0.5"
+  },
+  "devDependencies": {
+    "jsdom": "^22.1.0"
+  },
+  "scripts": {
+    "test": "node --test tests/index.test.mjs"
+  }
+}
