@@ -68,3 +68,12 @@
     </div>
 </body>
 </html>
+
+<?php 
+
+require __DIR__ . "\\src\\api\\feed.php";
+
+$feed = new Feed();
+# echo json_encode($feed->getFeed());
+
+?>

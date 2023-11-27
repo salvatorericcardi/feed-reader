@@ -87,6 +87,10 @@ if($post['current'] != null) {
 # sort feed by pubdate
 usort($feed, fn($a, $b) => strtotime($b['pubdate']) - strtotime($a['pubdate']));
 
+session_start();
+$_SESSION['feed'] = $feed[0];
+session_unset();
+
 # encode feed array and return a json
 $json = json_encode($feed);
 echo $json;
