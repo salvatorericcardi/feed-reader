@@ -219,10 +219,12 @@ export function printPagination(feed, form, page) {
     const dotsCopy = dots.cloneNode();
 
     if(page <= 2 || page >= length - 3) {
-        if(page + 1 < length / 2) {
-            buttons[buttons.length - 1].before(dots);
-        } else if(page + 1 > length / 2) {
-            buttons[0].after(dots);
+        if(length > 1) {
+            if(page + 1 < length / 2) {
+                buttons[buttons.length - 1].before(dots);
+            } else if(page + 1 > length / 2) {
+                buttons[0].after(dots);
+            }
         }
     } else {
         if(page > 2 || page < length - 3) {
