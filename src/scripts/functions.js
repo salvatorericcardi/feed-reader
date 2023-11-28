@@ -14,7 +14,7 @@ export async function getFeed(options) {
 
         return array;
     })
-};
+}
 
 export function clearFeed() {
     const container = document.getElementById('container');
@@ -67,7 +67,7 @@ export function printFeed(feed, index = 0, page = 0) {
         // container section
         const container = document.getElementById('container');
         container.appendChild(news);   
-    };
+    }
 
     if(feed.length > 0) {
         printSummary(feed);
@@ -75,7 +75,7 @@ export function printFeed(feed, index = 0, page = 0) {
     } else {
         printSummary();
     }
-};
+}
 
 export function splitFeed(feed, pagination) {
     // split feed into chunks
@@ -124,7 +124,7 @@ export function filterFeed(feed, filterType, searchRegex) {
 
         // invert false to true
         return !variable;
-    });
+    })
 }
 
 /*** Summary section *****************************/
