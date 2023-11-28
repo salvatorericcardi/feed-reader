@@ -199,6 +199,37 @@ export function printPagination(feed, form, page) {
 
     const buttons = document.getElementsByClassName('pages');
     buttons.item(page).classList.add('active');
+
+    const tmp = Object.assign(HTMLCollection, buttons);
+    let j = 0;
+
+    for (let index = 0; index < length; index++) {
+        if(index !== 0 && (index < page - 1 || index > page + 1) && index !== length - 1) {
+            tmp[j].remove();
+        }
+
+        j++;
+    }
+
+    const diff = length - buttons.length;
+
+    const dots = document.createElement('i');
+    dots.classList.add('pages', 'bi', 'bi-three-dots', 'col-auto', 'mx-1');
+
+    const dotsCopy = dots.cloneNode();
+
+    if(page <= 2 || page >= length - 3) {
+        if(page + 1 < length / 2) {
+            buttons[buttons.length - 1].before(dots);
+        } else if(page + 1 > length / 2) {
+            buttons[0].after(dots);
+        }
+    } else {
+        if(page > 2 || page < length - 3) {
+            buttons[0].after(dots);
+            buttons[buttons.length - 1].before(dotsCopy);
+        }
+    }
 }
 
 export function clearPagination() {
