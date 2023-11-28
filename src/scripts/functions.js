@@ -1,4 +1,4 @@
-import { getAllFromLocalStorage, objToArr } from "./utilities.js";
+import { getAllFromLocalStorage, objToArr, orderBy } from "./utilities.js";
 
 /*** Feed section *****************************/
 export async function getFeed(options) {
@@ -148,9 +148,11 @@ export function printSummary(feed = []) {
 export function printPagination(feed, form, page) {
     clearPagination();
 
-    for(let i = 1; i <= Object.keys(feed).length; i++) {
+    const length = Object.keys(feed).length;
+
+    for(let i = 1; i <= length; i++) {
         form = document.forms.namedItem('feed-reader');
-        
+
         const button = document.createElement('button');
         button.classList.add('pages', 'btn', 'btn-outline-secondary', 'col-auto', 'mx-1');
         button.type = 'button';
@@ -189,18 +191,13 @@ export function printPagination(feed, form, page) {
 
             clearFeed();
             printFeed(chunks, undefined, page);
-        };
+        }
 
         const pages = document.getElementById('pages');
         pages.appendChild(button);
     }
 
     const buttons = document.getElementsByClassName('pages');
-    
-    for (const el of buttons) {
-        el.classList.remove('active')   
-    }
-
     buttons.item(page).classList.add('active');
 }
 
