@@ -12,12 +12,6 @@ class Feed {
     }
 
     public function getFeed() {
-        session_start();
-
-        if(isset($_SESSION['feed'])) {
-            $this->feed = $_SESSION['feed'];
-        }
-
         return $this->feed;
     }
 }
