@@ -5,7 +5,7 @@
     "node-localstorage": "^3.0.5"
   },
   "devDependencies": {
-    "jsdom": "^22.1.0"
+    "jsdom": "^23.0.1"
   },
   "scripts": {
     "test": "node --test tests/index.test.mjs"
