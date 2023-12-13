@@ -8,7 +8,7 @@ import { filterFeed, getFeed, splitFeed } from '../src/scripts/functions.js'
 import { arrToObj, getAllFromLocalStorage, objToArr } from '../src/scripts/utilities.js'
 
 /*** Global variables *****************************************************/
-const window = await JSDOM.fromFile('index.php', {contentType: 'text/html'}).then(dom => dom.window)
+const window = await JSDOM.fromFile('index.html', {contentType: 'text/html'}).then(dom => dom.window)
 
 if (typeof localStorage === "undefined" || localStorage === null) {   
     globalThis.localStorage = new LocalStorage('/scratch')
