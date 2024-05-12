@@ -1,5 +1,5 @@
-import { clearFeed, filterFeed, getFeed, perPage, printFeed, splitFeed } from "./scripts/functions.js"
-import { arrToObj, getAllFromLocalStorage, objToArr, orderBy } from "./scripts/utilities.js"
+import { clearFeed, filterFeed, getFeed, perPage, printFeed, splitFeed } from "./lib/functions.js"
+import { arrToObj, getAllFromLocalStorage, objToArr, orderBy } from "./lib/utilities.js"
 
 /** Global variables */
 var db
