@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import { getAllFromLocalStorage, objToArr, orderBy } from "./utilities.js";
 
 /*** Feed section *****************************/
 export async function getFeed(options) {
-    const feed = await fetch('http://localhost:8000/src/parser.php', options)
+    const feed = await fetch(`${process.env.BASE_URL}/src/parser.php`, options)
         .then(response => response.json())
         .then(result => result);
 
