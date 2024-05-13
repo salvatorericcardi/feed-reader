@@ -1,10 +1,15 @@
 import { getAllFromLocalStorage, objToArr, orderBy } from "./utilities.js";
 
 /*** Feed section *****************************/
-export async function getFeed(options) {
+export async function getFeed(data) {
+    const options = {
+        method: 'post',
+        body: JSON.stringify(data),
+    }
+
     const feed = await fetch('../src/parser.php', options)
-        .then(response => response.json())
-        .then(result => result);
+    .then(response => response.json())
+    .then(result => result);
 
     return feed.map(record => {
         const array = [];

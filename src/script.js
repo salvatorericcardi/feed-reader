@@ -12,11 +12,6 @@ const data = {
     current: null,
 }
 
-const options = {
-    method: 'post',
-    body: JSON.stringify(data),
-}
-
 /*** Main section ********************************/
 form.addEventListener('submit', async e => {
     e.preventDefault()
@@ -34,13 +29,8 @@ form.addEventListener('submit', async e => {
     localStorage.setItem('feed-' + feedTitle, feedValue)
 
     data.current = feedArray
-    
-    const options = {
-        method: 'post',
-        body: JSON.stringify(data),
-    }
 
-    const feed = await getFeed(options)
+    const feed = await getFeed(data)
     const chunks = splitFeed(feed, form.pagination.value)
 
     printFeed(chunks)
@@ -50,7 +40,7 @@ document.getElementById('orderBy').addEventListener('change', async e => {
     let storedFeed = sessionStorage.getItem('storedFeed')
     storedFeed = JSON.parse(storedFeed)
 
-    let feed = storedFeed ? storedFeed : await getFeed(options)
+    let feed = storedFeed ? storedFeed : await getFeed(data)
     feed = objToArr(feed)
     feed = orderBy(feed, form.orderBy.value)
 
@@ -64,7 +54,7 @@ document.getElementById('pagination').addEventListener('change', async e => {
     let storedFeed = sessionStorage.getItem('storedFeed')
     storedFeed = JSON.parse(storedFeed)
     
-    const feed = storedFeed ? storedFeed : await getFeed(options)
+    const feed = storedFeed ? storedFeed : await getFeed(data)
     const chunks = await perPage(feed, form.pagination.value)
 
     clearFeed()
@@ -78,7 +68,7 @@ document.getElementById('search').addEventListener('change', async e => {
     // let storedFeed = sessionStorage.getItem('storedFeed')
     // storedFeed = JSON.parse(storedFeed)
 
-    let feed = await getFeed(options)
+    let feed = await getFeed(data)
     // let feed = search === '' ? await getFeed(options) : (Object.keys(storedFeed).length > 2 ? storedFeed : await getFeed(options))  
 
     if(form.search.value.length == 0) {
@@ -110,7 +100,7 @@ document.getElementById('search-type').addEventListener('change', async e => {
     const search = form.search.value
     const type = form['search-type'].value
 
-    let feed = await getFeed(options) 
+    let feed = await getFeed(data) 
     
     const regex = new RegExp(search, 'gi')
 
@@ -132,7 +122,7 @@ document.getElementById('search-type').addEventListener('change', async e => {
 
 document.addEventListener('DOMContentLoaded', async e => {
     if(form.search.value === '') {
-        const feed = await getFeed(options)
+        const feed = await getFeed(data)
         const chunks = splitFeed(feed, form.pagination.value)
         printFeed(chunks)
 
@@ -157,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async e => {
         return
     }
    
-    const feed = await getFeed(options)
+    const feed = await getFeed(data)
     const chunks = splitFeed(feed, form.pagination.value)
 
     printFeed(chunks)
