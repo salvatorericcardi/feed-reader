@@ -7,7 +7,7 @@ export async function getFeed(data) {
         body: JSON.stringify(data),
     }
 
-    const feed = await fetch('../src/parser.php', options)
+    const feed = await fetch(`${window.location.origin}/src/parser.php`, options)
     .then(response => response.json())
     .then(result => result);
 
