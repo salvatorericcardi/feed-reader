@@ -1,15 +1,4 @@
 {
-  "headers": [
-    {
-      "source": "*",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
-  ],
   "functions": {
     "src/*.php": {
       "runtime": "vercel-php@0.7.1"
