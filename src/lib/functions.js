@@ -7,7 +7,8 @@ export async function getFeed(data) {
         body: JSON.stringify(data),
     }
 
-    const feed = await fetch(`${window.location.origin}/src/parser.php`, options)
+    // set your custom vercel.json to build and deploy
+    const feed = await fetch(`${window.location.origin}/src`, options)
     .then(response => response.json())
     .then(result => result);
 
