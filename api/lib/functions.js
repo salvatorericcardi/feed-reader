@@ -8,7 +8,7 @@ export async function getFeed(data) {
     }
 
     // set your custom vercel.json to build and deploy
-    const feed = await fetch(`${window.location.origin}/src`, options)
+    const feed = await fetch(`${window.location.origin}/api`, options)
     .then(response => response.json())
     .then(result => result);
 
@@ -35,14 +35,14 @@ export function printFeed(feed, index = 0, page = 0) {
         image.classList.add('images', 'col-3');
 
         if(feed[index][key].link.search(/governo/i) > -1) {
-            image.src = '/src/images/governo.jpeg';
+            image.src = '/api/images/governo.jpeg';
         } else if(feed[index][key].link.search(/inps/i) > -1) {
-            image.src = '/src/images/inps.jpeg';
+            image.src = '/api/images/inps.jpeg';
             image.style = 'transform: scale(0.5)';
         } else if(feed[index][key].link.search(/agenziaentrate/i) > -1) {
-            image.src = '/src/images/agenzia-delle-entrate.jpeg';
+            image.src = '/api/images/agenzia-delle-entrate.jpeg';
         } else {
-            image.src = '/src/images/image.jpg';
+            image.src = '/api/images/image.jpg';
             image.style = 'transform: scale(0.5)';
         }
 
