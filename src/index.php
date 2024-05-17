@@ -11,7 +11,22 @@ $feed = [];
 if($post['stored'] != null) {
     foreach ($post['stored'] as $item) {
         # load feed rss
-        $xml = simplexml_load_file($item['url']) or die('Error during feed loading!');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $item['url']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}"
+        ]);
+
+        $output = curl_exec($ch);
+        $error = curl_error($ch);
+        if($error) {
+            die(json_encode($error));
+        }
+
+        curl_close ($ch);
+
+        # $xml = simplexml_load_file($item['url']) or die('Error during feed loading!');
+        $xml = simplexml_load_string($output);
 
         # for each cycle add a record in feed array
         foreach ($xml->channel->item as $record) {
